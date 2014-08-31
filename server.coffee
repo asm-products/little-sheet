@@ -26,8 +26,6 @@ api = express()
     db.sheets.findOne
       id: req.params.sheetId
     , (err, sheet) ->
-      console.log 'sheet:', sheet
-
       if not sheet
         sheet =
           cells: [

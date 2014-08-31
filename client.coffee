@@ -14,7 +14,7 @@ Spreadsheet = require 'react-microspreadsheet'
 
 MainPage = React.createClass
   componentDidMount: ->
-    location.href = location.href + '/' + cuid.slug()
+    location.href = location.href + cuid.slug()
   render: -> (div {})
 
 SheetPage = React.createClass
