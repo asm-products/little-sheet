@@ -1,56 +1,65 @@
-"use strict"
-
-React = require("react")
-ReactAsync = require("react-async")
-ReactRouter = require("react-router-component")
-superagent = require("superagent")
+React = require 'react'
+ReactAsync = require 'react-async'
+ReactRouter = require 'react-router-component'
+superagent = require 'superagent'
+cuid = require 'cuid'
 Pages = ReactRouter.Pages
 Page = ReactRouter.Page
 NotFound = ReactRouter.NotFound
 Link = ReactRouter.Link
 
-{html, head, link, script, div, h1, p} = React.DOM
+Spreadsheet = require 'react-microspreadsheet'
+
+{html, head, link, script, div, meta, h1, h2, p, button} = React.DOM
 
 MainPage = React.createClass
-  render: ->
-    (div className: 'MainPage',
-      (h1 {}, 'Hello, anonymous!')
-      (p {},
-        (Link href: '/users/doe'
-        , 'Login')
-      )
-    )
+  componentDidMount: ->
+    location.href = location.href + '/' + cuid.slug()
+  render: -> (div {})
 
-UserPage = React.createClass
+SheetPage = React.createClass
   mixins: [ReactAsync.Mixin]
   statics:
-    getUserInfo: (username, cb) ->
-      superagent.get "http://localhost:3000/api/users/" + username, (err, res) ->
+    getSheetData: (sheetId, cb) ->
+      superagent.get "http://162.243.206.108:3000/api/sheets/#{sheetId}", (err, res) ->
+        cb err, (if res then res.body else null)
+
+    saveSheetData: (sheetData, cb) ->
+      superagent.put("http://162.243.206.108:3000/api/sheets/#{sheetData._id}")
+                .send(sheetData)
+                .end (err, res) ->
         cb err, (if res then res.body else null)
 
   getInitialStateAsync: (cb) ->
-    @type.getUserInfo @props.username, cb
+    @type.getSheetData @props.sheetId, (err, sheet) ->
+      cb err, sheet: sheet
 
   componentWillReceiveProps: (nextProps) ->
-    if @props.username isnt nextProps.username
-      @type.getUserInfo nextProps.username, (err, info) =>
-        throw err  if err
-        @setState info
+    if @props.sheetId isnt nextProps.sheetId
+      @type.getSheetData nextProps.sheetId, (err, sheet) =>
+        throw err if err
+        @setState sheet: sheet
+
+  save: (e) ->
+    e.preventDefault()
+    sheetData =
+      cells: @state.sheet.cells
+      _id: @props.sheetId
+      author: 'anonymous'
+    @type.saveSheetData sheetData, (err, res) =>
+      console.log err, res
 
   render: ->
-    otherUser = (if @props.username is "doe" then "ivan" else "doe")
+    sheetId = @props.sheetId
+    cells = @state.sheet.cells
 
-    (div className: 'UserPage',
-      (h1 {}, "Hello, #{@state.name}!")
-      (p {},
-        'Go to '
-        (Link href: "/users/#{otherUser}"
-        , "/users/#{otherUser}")
-      )
-      (p {},
-        (Link href: "/"
-        , 'Logout')
-      )
+    (div {},
+      (h2 {}, sheetId)
+      (button
+        className: 'pure-button'
+        onClick: @save
+      , 'SAVE')
+      (Spreadsheet cells: cells)
     )
 
 NotFoundHandler = React.createClass
@@ -61,15 +70,18 @@ App = React.createClass
   render: ->
     (html {},
       (head {},
+        (meta charSet: 'utf-8')
+        (link rel: 'stylesheet', href: 'http://yui.yahooapis.com/pure/0.5.0/pure-min.css')
         (link rel: 'stylesheet', href: '/assets/style.css')
         (script src: '/assets/bundle.js')
       )
+      (h1 {}, 'Sheets')
       (Pages
         className: 'App'
         path: @props.path
       ,
         (Page path: '/', handler: MainPage)
-        (Page path: '/users/:username', handler: UserPage)
+        (Page path: '/:sheetId', handler: SheetPage)
         (NotFound handler: NotFoundHandler)
       )
     )
