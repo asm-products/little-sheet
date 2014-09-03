@@ -1,18 +1,149 @@
+@import url(http://fonts.googleapis.com/css?family=Inconsolata|Sacramento);
+
 @import "node_modules/react-microspreadsheet/style.less";
 
-body {
+@green: #254D45;
+@black: #313A39;
+@beige: #F7F6EB;
+@title: rgba(143, 49, 31, 0.9);
+
+html, body {
   margin: 0;
   padding: 0;
   font-family: Helvetica, sans-serif;
-  background: #fefefe;
+  background: @beige;
   color: #444444;
 }
 
-.App {
-  padding: 25px;
+.title {
+  text-align: center;
+
+  h1 {
+    font-family: 'Inconsolata';;
+    color: @green;
+  }
 }
 
-.microspreadsheet {
-  td { border-color: rgb(194, 221, 178) !important; }
-  td.label { background-color: rgb(194, 221, 178) !important; }
+.main {
+  text-align: center;
+
+  .sheet-area {
+    display: inline-block;
+
+    .sheetId {
+      margin-bottom: 4px;
+
+      a {
+        text-decoration: none;
+        color: @title;
+      }
+    }
+    .author,
+    .date {
+      margin-bottom: 10px;
+      font-style: italic;
+      font-weight: normal;
+      color: #666;
+      font-size: 0.8em;
+    }
+    a.date:hover { text-decoration: underline; }
+
+    .remove-row, .remove-col {
+      background: rgba(255,255,255,0.4);
+
+      &:hover {
+        background: @title;
+      }
+    }
+    .remove-row {
+      height: 10px;
+      width: calc(100% - 20px);
+      width: -webkit-calc(100% - 20px);
+      width: -moz-calc(100% - 20px);
+      width: 100%;
+      position: relative;
+      left: 10px;
+      border-radius: 91px 91px 0 0;
+    }
+    .remove-col {
+      float: left;
+      width: 10px;
+      border-radius: 91px 0 0 91px;
+    }
+
+    .microspreadsheet {
+      float: left;
+      background: white;
+
+      td { border-color: rgb(194, 221, 178) !important; }
+      td.label { background-color: rgb(194, 221, 178) !important; }
+
+      td div { height: 23px !important; }
+    }
+
+    .add-row, .add-col {
+      background-color: @title;
+
+      &:hover {
+        background: rgba(255,255,255,0.3);
+      }
+    }
+    .add-col {
+      float: left;
+      height: 100%;
+      width: 10px;
+      border-radius: 0 91px 91px 0;
+    }
+    .add-row {
+      width: calc(100% - 20px);
+      width: -webkit-calc(100% - 20px);
+      width: -moz-calc(100% - 20px);
+      width: 100%;
+      position: relative;
+      left: 10px;
+      height: 10px;
+      border-radius: 0 0 91px 91px;
+    }
+
+    .sign {
+      margin-top: 16px;
+
+      label { margin-right: 5px; }
+      & > input {
+        width: 164px;
+        border: none;
+        border-bottom: 1px solid @green;
+        border-radius: 0;
+        box-shadow: none;
+        background-color: transparent;
+        padding-bottom: 0;
+        font-family: 'Sacramento';
+        font-size: 1.3em;
+      }
+    }
+
+    button.save {
+      font-family: 'Inconsolata';
+      font-size: 1.1em;
+      margin: 20px auto;
+      background: @green; color: white;
+    }
+  }
+
+  .sub {
+    margin-top: 90px;
+    margin-bottom: 30px;
+
+    .new {
+      padding: 3px 7px;
+      background-color: rgba(143, 49, 31, 0.6);
+      color: white;
+
+      input {
+        width: 100px;
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #666;
+      }
+    }
+  }
 }

@@ -1,6 +1,9 @@
 renderApp = (req, res, next) ->
   path = url.parse(req.url).pathname
-  app = App(path: path)
+  endpoint = process.env.REST_ENDPOINT or 'http://162.243.206.108:3000'
+  app = App
+    path: path
+    endpoint: endpoint
   ReactAsync.renderComponentToStringWithAsyncState app, (err, markup) ->
     return next(err) if err
     res.send "<!doctype html>\n" + markup
@@ -10,7 +13,7 @@ renderApp = (req, res, next) ->
 path = require 'path'
 url = require 'url'
 bodyParser = require 'body-parser'
-mongojs = require 'mongojs'
+AWS = require 'aws-sdk'
 express = require 'express'
 browserify = require 'connect-browserify'
 coffeeify = require 'coffeeify'
@@ -19,48 +22,34 @@ App = require './client.coffee'
 
 development = process.env.NODE_ENV isnt "production"
 
-db = mongojs.connect(process.env.MONGOLAB_URI, ['sheets'])
+s3 = new AWS.S3
+  accessKeyId: process.env.S3_KEY_ID
+  secretAccessKey: process.env.S3_SECRET
+  region: 'us-east-1'
 
 api = express()
-  .get('/sheets/:sheetId', (req, res) ->
-    db.sheets.findOne
-      id: req.params.sheetId
-    , (err, sheet) ->
-      if not sheet
-        sheet =
-          cells: [
-            ['', '', '']
-            ['', '', '']
-            ['', '', '']
-            ['', '', '']
-            ['', '', '']
-            ['', '', '']
-          ]
-      res.send sheet
-  )
   .put('/sheets/:sheetId', (req, res) ->
+
+    sheetId = req.params.sheetId
+
     if req.body.cells.length > 99 or req.body.cells[0].length > 20
       res.status 400
 
-    db.sheets.update
-      id: req.params.sheetId
-    ,
-      $set:
-        cells: req.body.cells
-      $push:
-        versions:
-          $each: [
-            cells: req.body.cells
-            author: req.body.author
-            date: (new Date()).toISOString()
-          ]
-          $slice: -20
-    ,
-      upsert: true
-    ,
-      (err, sheet) ->
-        console.log 'saved: ', err, sheet
-        res.send sheet
+    sheetData =
+      cells: req.body.cells
+      author: req.body.author
+
+    s3.putObject {
+      Bucket: 'sheetstore'
+      Key: sheetId + '.json'
+      ACL: 'public-read'
+      Body: JSON.stringify sheetData
+      ContentType: 'application/json'
+    } , (err, data) ->
+      if not err
+        res.send data
+      else
+        res.status 503
   )
 
 app = express()
