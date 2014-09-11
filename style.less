@@ -24,6 +24,14 @@ html, body {
   h1 {
     font-family: 'Inconsolata';;
     color: @green;
+    font-size: 3em;
+    margin-bottom: 7px;
+  }
+  h2 {
+    font-family: Sacramento;
+    font-weight: normal;
+    font-size: 2.3em;
+    margin-top: 0px;
   }
 }
 
@@ -38,6 +46,7 @@ html, body {
 
       a {
         text-decoration: none;
+        font-family: Inconsolata;
         color: @title;
       }
     }
@@ -50,6 +59,12 @@ html, body {
       font-size: 0.8em;
     }
     a.date:hover { text-decoration: underline; }
+
+    .share {
+      margin: 7px 0px 11px;
+
+      input { width: 132px }
+    }
 
     .remove-row, .remove-col, .add-row, .add-col { cursor: pointer; }
     .remove-row, .remove-col {
@@ -90,6 +105,7 @@ html, body {
 
       td { border-color: @sheetBorder !important; }
       td.cell.selected div { border-color: @sheetBorder !important; }
+      td.cell { width: 62px; }
       td.label { background-color: @sheetBorder !important; }
     }
 
@@ -120,8 +136,8 @@ html, body {
   }
 
   .sub {
-    margin-top: 90px;
-    margin-bottom: 30px;
+    margin-top: 40px;
+    margin-bottom: 0;
 
     .new {
       padding: 3px 7px;

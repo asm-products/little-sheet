@@ -10,7 +10,7 @@ Link = ReactRouter.Link
 
 Spreadsheet = require 'react-microspreadsheet'
 
-{html, head, link, script, meta,
+{html, head, link, script, meta, title,
  div, span,
  h1, h2, a, p,
  form, label, input, button} = React.DOM
@@ -51,8 +51,8 @@ SheetPage = React.createClass
       else
         cb {Error: 'noSheetId'}
 
-    saveSheetData: (endpoint, sheetId, sheetData, cb) ->
-      superagent.put("#{endpoint}/api/sheets/#{sheetId}")
+    saveSheetData: (sheetId, sheetData, cb) ->
+      superagent.put("/api/sheets/#{sheetId}")
                 .send(sheetData)
                 .end (err, res) ->
         cb err, (if res then res.body else null)
@@ -61,6 +61,10 @@ SheetPage = React.createClass
     @type.getSheetData @props.sheetId, (err, sheet) ->
       cb err, {sheet: sheet, newSheetId: cuid.slug()}
 
+  componentDidMount: ->
+    @setState domain: location.protocol + '//' + location.host
+    document.title = "#{@props.sheetId} @ Sheets"
+
   componentWillReceiveProps: (nextProps) ->
     if @props.sheetId isnt nextProps.sheetId
       @type.getSheetData nextProps.sheetId, (err, sheet) =>
@@ -68,6 +72,9 @@ SheetPage = React.createClass
         @setState
           sheet: sheet
           newSheetId: cuid.slug()
+
+  componentDidUpdate: ->
+    document.title = "#{@props.sheetId} @ Sheets"
 
   render: ->
     sheetId = @props.sheetId
@@ -83,6 +90,13 @@ SheetPage = React.createClass
           className: 'date'
           href: '/' + @props.sheetId + "?versionId=#{@state.sheet.versionId}"
         , @state.sheet.date or '')
+        (div className: 'share',
+          (input
+            onClick: @selectText
+            readOnly: true
+            value: @state.domain + '/' + @props.sheetId
+          )
+        ) if @state.sheet.date and @state.domain
         (div
           title: 'Remove a row from the end'
           className: 'remove-row'
@@ -127,7 +141,7 @@ SheetPage = React.createClass
         (button
           className: 'pure-button save'
           onClick: @save
-        , 'SAVE')
+        , @state.saveButtonText or 'SAVE')
       )
       (div className: 'sub',
         (form className: 'pure-form',
@@ -180,12 +194,32 @@ SheetPage = React.createClass
     @state.sheet.cells = cells
 
   save: (e) ->
+    @setState saveButtonText: 'SAVING'
     e.preventDefault()
     data =
       cells: @state.sheet.cells
       author: @state.author
-    @type.saveSheetData @props.endpoint, @props.sheetId, data, (err, res) =>
-      console.log err, res
+    @type.saveSheetData @props.sheetId, data, (err, res) =>
+      console.log err
+      if err
+        @setState
+          saveButtonText: 'ERROR'
+        , setTimeout =>
+          @setState saveButtonText: null
+        , 3000
+      else if res
+        sheet = @state.sheet
+        sheet.date = (new Date()).toGMTString()
+        @setState
+          sheet: sheet
+          saveButtonText: 'SAVED'
+        , setTimeout =>
+          @setState saveButtonText: null
+        , 3000
+
+  selectText: (e) ->
+    e.target.focus()
+    e.target.select()
 
 NotFoundHandler = React.createClass
   render: ->
@@ -196,12 +230,25 @@ App = React.createClass
     (html {},
       (head {},
         (meta charSet: 'utf-8')
+        (title {}, 'Sheets: a small sheet you can share')
         (link rel: 'stylesheet', href: 'http://yui.yahooapis.com/pure/0.5.0/pure-min.css')
         (link rel: 'stylesheet', href: '/assets/style.css')
         (script src: '/assets/bundle.js')
+        (script
+          dangerouslySetInnerHTML:
+            __html: '''
+  (function(t,r,a,c,k){k=r.createElement('script');k.type='text/javascript';
+  k.async=true;k.src=a;r.getElementsByTagName('head')[0].appendChild(k);
+  t.maq=[];t.mai=c;t.ma=function(){t.maq.push(arguments)};
+  })(window,document,'http://static.microanalytics.alhur.es/tracker.js','2s9jicn0vr5mxxu');
+
+  ma('pageView');
+            '''
+        )
       )
       (div className: 'title',
         (h1 {}, 'Sheets')
+        (h2 {}, 'a small sheet you can share')
       )
       (Pages
         className: 'App'

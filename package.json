@@ -23,20 +23,19 @@
     "fibers": "~1.0.1",
     "coffee-script": "^1.8.0",
     "coffee-loader": "^0.7.2",
-    "webpack": "^1.4.0-beta5"
-  },
-  "devDependencies": {
-    "reactify": "~0.13.1",
-    "envify": "~1.2.0",
-    "browserify": "~3.44.2",
-    "uglify-js": "~2.4.13",
-    "coffeeify": "^0.7.0"
+    "webpack": "^1.4.0-beta5",
+    "body-parser": "^1.8.1",
+    "aws-sdk": "^2.0.15",
+    "cuid": "^1.2.4",
+    "less": "^1.7.5",
+    "react-microspreadsheet": "0.1.1",
+    "uglify-js": "^2.4.15"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "foreman run coffee server.coffee",
-    "build": "webpack ./client.coffee -p ./assets/bundle.js",
-    "build-light": "webpack ./client.coffee ./assets/bundle.js",
+    "build": "./node_modules/.bin/lessc --clean-css style.less ./assets/style.css && webpack ./client.coffee ./assets/bundle.js && uglifyjs ./assets/bundle.js -o ./assets/bundle.js",
+    "build-light": "./node_modules/.bin/lessc style.less ./assets/style.css && webpack ./client.coffee ./assets/bundle.js",
     "start-prod": "NODE_ENV=production coffee server.coffee",
     "clean": "rm -f./assets/bundle.js"
   },

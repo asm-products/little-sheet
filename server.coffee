@@ -1,9 +1,7 @@
 renderApp = (req, res, next) ->
   path = url.parse(req.url).pathname
-  endpoint = process.env.REST_ENDPOINT or 'http://162.243.206.108:3000'
   app = App
     path: path
-    endpoint: endpoint
   ReactAsync.renderComponentToStringWithAsyncState app, (err, markup) ->
     return next(err) if err
     res.send "<!doctype html>\n" + markup
@@ -44,6 +42,7 @@ api = express()
       Body: JSON.stringify sheetData
       ContentType: 'application/json'
     } , (err, data) ->
+      console.log err, data
       if not err
         res.send data
       else
@@ -56,6 +55,6 @@ app.use(bodyParser.json(strict: false))
    .use("/assets", express.static(path.join(__dirname, "assets")))
    .use("/api", api)
    .use(renderApp)
-   .listen 3000, ->
+   .listen (process.env.PORT or 3000), ->
   console.log "Point your browser at http://localhost:3000"
   return
