@@ -20,7 +20,10 @@
     "react-router-component": "~0.18.2",
     "express": "~4.1.1",
     "superagent": "~0.18.0",
-    "fibers": "~1.0.1"
+    "fibers": "~1.0.1",
+    "coffee-script": "^1.8.0",
+    "coffee-loader": "^0.7.2",
+    "webpack": "^1.4.0-beta5"
   },
   "devDependencies": {
     "reactify": "~0.13.1",
@@ -32,9 +35,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "foreman run coffee server.coffee",
-    "build": "NODE_ENV=production browserify -t coffeeify ./ | uglifyjs -cm 2>/dev/null > ./assets/bundle.js",
+    "build": "webpack ./client.coffee -p ./assets/bundle.js",
+    "build-light": "webpack ./client.coffee ./assets/bundle.js",
     "start-prod": "NODE_ENV=production coffee server.coffee",
-    "clean": "rm -f ./assets/bundle.js"
+    "clean": "rm -f./assets/bundle.js"
   },
   "author": "",
   "license": "MIT"

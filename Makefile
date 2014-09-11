@@ -3,14 +3,14 @@ start:
 
 build:
 	./node_modules/.bin/lessc --clean-css style.less ./assets/style.css
-	NODE_ENV=production ./node_modules/.bin/browserify -t coffeeify ./ | uglifyjs -cm 2>/dev/null > ./assets/bundle.js
+	npm run build
 
 build-light:
 	./node_modules/.bin/lessc style.less ./assets/style.css
-	./node_modules/.bin/browserify -t coffeeify ./client.coffee > ./assets/bundle.js
+	npm run build-light
 
 start-prod:
-	NODE_ENV=production coffee server.coffee
+	npm run start-prod
 
 clean:
 	rm -f ./assets/bundle.js
