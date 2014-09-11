@@ -6,6 +6,9 @@
 @black: #313A39;
 @beige: #F7F6EB;
 @title: rgba(143, 49, 31, 0.9);
+@titleTransparent: rgba(143, 49, 31, 0.1);
+@sheetBorder: rgb(194, 221, 178);
+@sheetBorderTransparent: rgba(194, 221, 178, 0.2);
 
 html, body {
   margin: 0;
@@ -48,61 +51,46 @@ html, body {
     }
     a.date:hover { text-decoration: underline; }
 
+    .remove-row, .remove-col, .add-row, .add-col { cursor: pointer; }
     .remove-row, .remove-col {
-      background: rgba(255,255,255,0.4);
+      background: @titleTransparent;
 
       &:hover {
         background: @title;
       }
     }
-    .remove-row {
+    .add-row, .add-col {
+      background-color: @sheetBorderTransparent;
+
+      &:hover {
+        background: @sheetBorder;
+      }
+    }
+    .add-row, .remove-row {
       height: 10px;
-      width: calc(100% - 20px);
-      width: -webkit-calc(100% - 20px);
-      width: -moz-calc(100% - 20px);
       width: 100%;
+      width: ~"-webkit-calc(100% - 20px)";
+      width: ~"-moz-calc(100% - 20px)";
+      width: ~"calc(100% - 20px)";
       position: relative;
       left: 10px;
-      border-radius: 91px 91px 0 0;
     }
-    .remove-col {
+    .remove-row { border-radius: 91px 91px 0 0; }
+    .add-row { border-radius: 0 0 91px 91px; }
+    .add-col, .remove-col {
       float: left;
       width: 10px;
-      border-radius: 91px 0 0 91px;
     }
+    .remove-col { border-radius: 91px 0 0 91px; }
+    .add-col { border-radius: 0 91px 91px 0; }
 
     .microspreadsheet {
       float: left;
       background: white;
 
-      td { border-color: rgb(194, 221, 178) !important; }
-      td.label { background-color: rgb(194, 221, 178) !important; }
-
-      td div { height: 23px !important; }
-    }
-
-    .add-row, .add-col {
-      background-color: @title;
-
-      &:hover {
-        background: rgba(255,255,255,0.3);
-      }
-    }
-    .add-col {
-      float: left;
-      height: 100%;
-      width: 10px;
-      border-radius: 0 91px 91px 0;
-    }
-    .add-row {
-      width: calc(100% - 20px);
-      width: -webkit-calc(100% - 20px);
-      width: -moz-calc(100% - 20px);
-      width: 100%;
-      position: relative;
-      left: 10px;
-      height: 10px;
-      border-radius: 0 0 91px 91px;
+      td { border-color: @sheetBorder !important; }
+      td.cell.selected div { border-color: @sheetBorder !important; }
+      td.label { background-color: @sheetBorder !important; }
     }
 
     .sign {
@@ -119,6 +107,7 @@ html, body {
         padding-bottom: 0;
         font-family: 'Sacramento';
         font-size: 1.3em;
+        text-align: center;
       }
     }
 

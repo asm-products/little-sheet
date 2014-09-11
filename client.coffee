@@ -51,8 +51,8 @@ SheetPage = React.createClass
       else
         cb {Error: 'noSheetId'}
 
-    saveSheetData: (endpoint, sheetData, cb) ->
-      superagent.put("#{endpoint}/api/sheets/#{sheetData._id}")
+    saveSheetData: (endpoint, sheetId, sheetData, cb) ->
+      superagent.put("#{endpoint}/api/sheets/#{sheetId}")
                 .send(sheetData)
                 .end (err, res) ->
         cb err, (if res then res.body else null)
@@ -68,6 +68,82 @@ SheetPage = React.createClass
         @setState
           sheet: sheet
           newSheetId: cuid.slug()
+
+  render: ->
+    sheetId = @props.sheetId
+
+    (div className: 'main',
+      (div className: 'sheet-area',
+        (h2 className: 'sheetId',
+          (Link {href: '/' + @props.sheetId}, @props.sheetId)
+        )
+        (span className: 'author'
+        , if @state.sheet.author then "by #{@state.sheet.author} at" else '')
+        (span # (Link
+          className: 'date'
+          href: '/' + @props.sheetId + "?versionId=#{@state.sheet.versionId}"
+        , @state.sheet.date or '')
+        (div
+          title: 'Remove a row from the end'
+          className: 'remove-row'
+          onClick: @removeRow
+        )
+        (div
+          title: 'Remove a column from the end'
+          className: 'remove-col'
+          style:
+            height: ((@state.sheet.cells.length + 1) * 27) + 'px'
+          onClick: @removeCol
+        )
+        (Spreadsheet
+          cells: @state.sheet.cells
+          onChange: @updateCells
+        )
+        (div
+          title: 'Add a column at the end'
+          className: 'add-col'
+          style:
+            height: ((@state.sheet.cells.length + 1) * 27) + 'px'
+          onClick: @addCol
+        )
+        (div
+          title: 'Add a row at the end'
+          className: 'add-row',
+          style:
+            top: ((@state.sheet.cells.length + 1) * 27) + 'px'
+          onClick: @addRow
+        )
+        (form className: 'pure-form sign',
+          (label {},
+            'Add your name? ' unless @state.sign
+            (input
+              type: 'checkbox'
+              valueLink: @linkState 'sign'
+              className: 'sign'
+            ) unless @state.sign
+          )
+          (input valueLink: @linkState 'author') if @state.sign
+        )
+        (button
+          className: 'pure-button save'
+          onClick: @save
+        , 'SAVE')
+      )
+      (div className: 'sub',
+        (form className: 'pure-form',
+          (Link
+            href: '/' + @state.newSheetId
+            className: 'pure-button new'
+          ,
+            'Create a new sheet at the address '
+            (input
+              onClick: @doNothing
+              valueLink: @linkState 'newSheetId'
+            )
+          )
+        )
+      )
+    )
 
   doNothing: (e) ->
     e.preventDefault()
@@ -108,76 +184,8 @@ SheetPage = React.createClass
     data =
       cells: @state.sheet.cells
       author: @state.author
-    @type.saveSheetData @props.endpoint, data, (err, res) =>
+    @type.saveSheetData @props.endpoint, @props.sheetId, data, (err, res) =>
       console.log err, res
-
-  render: ->
-    sheetId = @props.sheetId
-
-    (div className: 'main',
-      (div className: 'sheet-area',
-        (h2 className: 'sheetId',
-          (Link {href: '/' + @props.sheetId}, @props.sheetId)
-        )
-        (span className: 'author'
-        , if @state.sheet.author then "by #{@state.sheet.author} at" else '')
-        (span # (Link
-          className: 'date'
-          href: '/' + @props.sheetId + "?versionId=#{@state.sheet.versionId}"
-        , @state.sheet.date or '')
-        (div
-          className: 'remove-row'
-          onClick: @removeCol
-        )
-        (div
-          className: 'remove-col'
-          style:
-            height: (((@state.sheet.cells.length + 1) * 24) + 1) + 'px'
-          onClick: @removeRow
-        )
-        (Spreadsheet cells: @state.sheet.cells)
-        (div
-          className: 'add-col'
-          style:
-            height: (((@state.sheet.cells.length + 1) * 24) + 1) + 'px'
-          onClick: @addCol
-        )
-        (div
-          className: 'add-row',
-          onClick: @addRow
-        )
-        (form className: 'pure-form sign',
-          (label {},
-            'Add your name? ' unless @state.sign
-            (input
-              type: 'checkbox'
-              valueLink: @linkState 'sign'
-              className: 'sign'
-            ) unless @state.sign
-          )
-          (input valueLink: @linkState 'author') if @state.sign
-        )
-        (button
-          className: 'pure-button save'
-          onClick: @save
-          onChange: @updateCells
-        , 'SAVE')
-      )
-      (div className: 'sub',
-        (form className: 'pure-form',
-          (Link
-            href: '/' + @state.newSheetId
-            className: 'pure-button new'
-          ,
-            'Create a new sheet with address '
-            (input
-              onClick: @doNothing
-              valueLink: @linkState 'newSheetId'
-            )
-          )
-        )
-      )
-    )
 
 NotFoundHandler = React.createClass
   render: ->

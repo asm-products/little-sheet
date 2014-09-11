@@ -7,7 +7,7 @@ build:
 
 build-light:
 	./node_modules/.bin/lessc style.less ./assets/style.css
-	./node_modules/.bin/browserify -t coffeeify ./ > ./assets/bundle.js
+	./node_modules/.bin/browserify -t coffeeify ./client.coffee > ./assets/bundle.js
 
 start-prod:
 	NODE_ENV=production coffee server.coffee
