@@ -16,9 +16,23 @@ Spreadsheet = require 'react-microspreadsheet'
  form, label, input, button} = React.DOM
 
 MainPage = React.createClass
+  getInitialState: ->
+    cells: null
+
   componentDidMount: ->
-    location.href = location.href + cuid.slug()
-  render: -> (div {})
+    try
+      @setState cells: JSON.parse location.hash.slice 1
+    catch e
+        
+  render: ->
+    if not @state.cells
+      (div {})
+    else
+      (SheetPage
+        sheet:
+          cells: @state.cells
+        sheetId: cuid.slug()
+      )
 
 SheetPage = React.createClass
   mixins: [ReactAsync.Mixin, React.addons.LinkedStateMixin]
@@ -57,9 +71,16 @@ SheetPage = React.createClass
                 .end (err, res) ->
         cb err, (if res then res.body else null)
 
+  getInitialState: ->
+    if @props.sheet
+      {sheet: @props.sheet, newSheetId: cuid.slug()}
+
   getInitialStateAsync: (cb) ->
-    @type.getSheetData @props.sheetId, (err, sheet) ->
-      cb err, {sheet: sheet, newSheetId: cuid.slug()}
+    if not @props.sheet
+      @type.getSheetData @props.sheetId, (err, sheet) ->
+        cb err, {sheet: sheet, newSheetId: cuid.slug()}
+    else
+      cb null, {sheet: @props.sheet, newSheetId: cuid.slug()}
 
   componentDidMount: ->
     @setState domain: location.protocol + '//' + location.host
@@ -82,7 +103,7 @@ SheetPage = React.createClass
     (div className: 'main',
       (div className: 'sheet-area',
         (h2 className: 'sheetId',
-          (Link {href: '/' + @props.sheetId}, @props.sheetId)
+          (a {href: '/' + @props.sheetId}, @props.sheetId)
         )
         (span className: 'author'
         , if @state.sheet.author then "by #{@state.sheet.author} at" else '')
