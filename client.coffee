@@ -23,6 +23,7 @@ MainPage = React.createClass
     try
       @setState cells: JSON.parse location.hash.slice 1
     catch e
+      @setState cells: JSON.parse decodeURIComponent location.hash.slice 1
         
   render: ->
     if not @state.cells
