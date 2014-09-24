@@ -2,9 +2,8 @@ renderApp = (req, res, next) ->
   path = url.parse(req.url).pathname
   app = App
     path: path
-  ReactAsync.renderComponentToStringWithAsyncState app, (err, markup) ->
-    return next(err) if err
-    res.send "<!doctype html>\n" + markup
+  markup = React.renderComponentToString app
+  res.send "<!doctype html>\n" + markup
 
 "use strict"
 
@@ -13,8 +12,8 @@ url = require 'url'
 bodyParser = require 'body-parser'
 AWS = require 'aws-sdk'
 express = require 'express'
-ReactAsync = require 'react-async'
 App = require './client.coffee'
+React = require 'react'
 
 development = process.env.NODE_ENV isnt "production"
 

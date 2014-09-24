@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "react": "~0.10.0",
-    "react-async": "~0.9.1",
     "react-router-component": "~0.18.2",
     "express": "~4.1.1",
     "superagent": "~0.18.0",

@@ -1,5 +1,4 @@
 React = require 'react/addons'
-ReactAsync = require 'react-async'
 ReactRouter = require 'react-router-component'
 superagent = require 'superagent'
 cuid = require 'cuid'
@@ -36,7 +35,7 @@ MainPage = React.createClass
       )
 
 SheetPage = React.createClass
-  mixins: [ReactAsync.Mixin, React.addons.LinkedStateMixin]
+  mixins: [React.addons.LinkedStateMixin]
   statics:
     getSheetData: (sheetId, versionId, cb) ->
       if sheetId
@@ -74,19 +73,26 @@ SheetPage = React.createClass
 
   getInitialState: ->
     if @props.sheet
-      {sheet: @props.sheet, newSheetId: cuid.slug()}
-
-  getInitialStateAsync: (cb) ->
-    if not @props.sheet
-      @type.getSheetData @props.sheetId, (err, sheet) ->
-        cb err, {sheet: sheet, newSheetId: cuid.slug()}
+      sheet: @props.sheet
+      newSheetId: cuid.slug()
     else
-      cb null, {sheet: @props.sheet, newSheetId: cuid.slug()}
+      newSheetId: cuid.slug()
 
   componentDidMount: ->
     @setState domain: location.protocol + '//' + location.host
-    document.title = "#{@props.sheetId} @ Sheets"
 
+    # actually fetch the sheet
+    if not @state.sheet and @props.sheetId
+      @type.getSheetData @props.sheetId, (err, sheet) =>
+        @setState
+          sheet: sheet
+
+      # change page title
+      document.title = "#{@props.sheetId} @ Sheets"
+
+    else if not @state.sheet
+      location.pathname = @state.newSheetId
+    
   componentWillReceiveProps: (nextProps) ->
     if @props.sheetId isnt nextProps.sheetId
       @type.getSheetData nextProps.sheetId, (err, sheet) =>
@@ -96,10 +102,13 @@ SheetPage = React.createClass
           newSheetId: cuid.slug()
 
   componentDidUpdate: ->
-    document.title = "#{@props.sheetId} @ Sheets"
+    if @props.sheetId
+      # change page title
+      document.title = "#{@props.sheetId} @ Sheets"
 
   render: ->
-    sheetId = @props.sheetId
+    if not @state.sheet
+      return (div {})
 
     (div className: 'main',
       (div className: 'sheet-area',
@@ -131,10 +140,11 @@ SheetPage = React.createClass
             height: ((@state.sheet.cells.length + 1) * 27) + 'px'
           onClick: @removeCol
         )
+        (-> console.log @state)
         (Spreadsheet
           cells: @state.sheet.cells
           onChange: @updateCells
-        )
+        ) if @state.sheet
         (div
           title: 'Add a column at the end'
           className: 'add-col'
@@ -226,7 +236,7 @@ SheetPage = React.createClass
       if err
         @setState
           saveButtonText: 'ERROR'
-        , setTimeout =>
+        , => setTimeout =>
           @setState saveButtonText: null
         , 3000
       else if res
@@ -235,7 +245,7 @@ SheetPage = React.createClass
         @setState
           sheet: sheet
           saveButtonText: 'SAVED'
-        , setTimeout =>
+        , => setTimeout =>
           @setState saveButtonText: null
         , 3000
 
