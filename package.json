@@ -27,7 +27,7 @@
     "aws-sdk": "^2.0.15",
     "cuid": "^1.2.4",
     "less": "^1.7.5",
-    "react-microspreadsheet": "0.1.61",
+    "react-microspreadsheet": "0.1.72",
     "uglify-js": "^2.4.15"
   },
   "scripts": {

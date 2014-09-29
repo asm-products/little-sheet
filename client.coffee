@@ -1,4 +1,5 @@
 React = require 'react/addons'
+React.initializeTouchEvents(true)
 ReactRouter = require 'react-router-component'
 superagent = require 'superagent'
 cuid = require 'cuid'
