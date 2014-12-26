@@ -48,6 +48,24 @@ api = express()
         res.status 503
   )
 
+  .get('/versions/:sheetId', (req, res) ->
+
+    sheetId = req.params.sheetId
+
+    s3.listObjectVersions {
+      Bucket: 'sheetstore'
+      Prefix: sheetId
+      Delimiter: '.'
+      KeyMarker: '.json'
+    } , (err, data) ->
+      console.log err, data
+      if not err
+        res.send data.Versions
+      else
+        res.status 503
+
+  )
+
 app = express()
 
 app.use(bodyParser.json(strict: false))

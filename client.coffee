@@ -3,6 +3,7 @@ React.initializeTouchEvents(true)
 ReactRouter = require 'react-router-component'
 superagent = require 'superagent'
 cuid = require 'cuid'
+qs = require 'qs'
 Pages = ReactRouter.Pages
 Page = ReactRouter.Page
 NotFound = ReactRouter.NotFound
@@ -15,7 +16,7 @@ Spreadsheet = require 'react-microspreadsheet'
  h1, h2, a, p,
  form, label, input, button} = React.DOM
 
-MainPage = React.createClass
+IndexPage = React.createClass
   getInitialState: ->
     cells: null
 
@@ -43,7 +44,7 @@ SheetPage = React.createClass
   statics:
     getSheetData: (sheetId, versionId, cb) ->
       if sheetId
-        url = "http://sheetstore.s3-website-us-east-1.amazonaws.com/#{sheetId}.json"
+        url = "http://s3.amazonaws.com/sheetstore/#{sheetId}.json"
         if typeof versionId == 'string'
           url += "?versionId=#{versionId}"
         else
@@ -69,6 +70,11 @@ SheetPage = React.createClass
       else
         cb {Error: 'noSheetId'}
 
+    getSheetVersions: (sheetId, cb) ->
+      superagent.get("/api/versions/#{sheetId}", (err, res) ->
+        cb err, (if res then res.body else null)
+      )
+
     saveSheetData: (sheetId, sheetData, cb) ->
       superagent.put("/api/sheets/#{sheetId}")
                 .send(sheetData)
@@ -87,19 +93,25 @@ SheetPage = React.createClass
 
     # actually fetch the sheet
     if not @state.sheet and @props.sheetId
-      @type.getSheetData @props.sheetId, (err, sheet) =>
+      @type.getSheetData @props.sheetId, qs.parse(location.query).v, (err, sheet) =>
+        @state.sheet = sheet
         @setState
           sheet: sheet
 
       # change page title
       document.title = "#{@props.sheetId} @ Sheets"
 
+      # fetch versions
+      @type.getSheetVersions @props.sheetId, (err, versions) =>
+        @state.sheet.versions = versions
+        @setState sheet: sheet
+
     else if not @state.sheet
       location.pathname = @state.newSheetId
     
   componentWillReceiveProps: (nextProps) ->
     if @props.sheetId isnt nextProps.sheetId
-      @type.getSheetData nextProps.sheetId, (err, sheet) =>
+      @type.getSheetData nextProps.sheetId, qs.parse(location.query).v, (err, sheet) =>
         throw err if err
         @setState
           sheet: sheet
@@ -121,9 +133,9 @@ SheetPage = React.createClass
         )
         (span className: 'author'
         , if @state.sheet.author then "by #{@state.sheet.author} at" else '')
-        (span # (Link
+        (Link
           className: 'date'
-          href: '/' + @props.sheetId + "?versionId=#{@state.sheet.versionId}"
+          href: '/' + @props.sheetId + "?v=#{@state.sheet.versionId}"
         , @state.sheet.date or '')
         (div className: 'share',
           (input
@@ -179,6 +191,16 @@ SheetPage = React.createClass
           onClick: @save
         , @state.saveButtonText or 'SAVE')
       )
+      (div className: 'versions',
+        (ul {},
+          (li {},
+            (Link
+              href: "?v=#{version.VersionId}"
+            , version.LastModified)
+            version.Size
+          ) for version in @state.sheet.versions
+        )
+      ) if @state.sheet.versions
       (div className: 'sub',
         (form className: 'pure-form',
           (Link
@@ -290,7 +312,7 @@ App = React.createClass
         className: 'App'
         path: @props.path
       ,
-        (Page path: '/', handler: MainPage)
+        (Page path: '/', handler: IndexPage)
         (Page path: '/:sheetId', handler: SheetPage)
         (NotFound handler: NotFoundHandler)
       )
