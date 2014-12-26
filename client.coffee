@@ -8,7 +8,7 @@ Page = ReactRouter.Page
 NotFound = ReactRouter.NotFound
 Link = ReactRouter.Link
 
-Spreadsheet = require 'react-microspreadsheet'
+Spreadsheet = require 'react-spreadsheet'
 
 {html, head, link, script, meta, title,
  div, span,
