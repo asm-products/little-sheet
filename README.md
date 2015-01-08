@@ -6,7 +6,7 @@
 
 This is a product being built by the Assembly community. You can help push this idea forward by visiting [https://assembly.com/sheetsh](https://assembly.com/sheetsh).
 
-### How to run locally
+## How to run locally
 
 ```
 git clone git@github.com:asm-products/sheetsh.git
@@ -26,6 +26,19 @@ If you wanna save you will need the following:
 `S3_BUCKET_NAME`, `S3_KEY_ID`, `S3_SECRET` and a correct `S3_ENDPOINT`, of course.
 
 Just put them all in a `.env` file and run with [Foreman](https://toolbelt.heroku.com/).
+
+**To run with a custom build of [react-spreadsheet](https://github.com/asm-products/sheetsh-react-spreadsheet)**
+
+In a separate folder (the parent folder of your github cloned projects, for example):
+
+```
+git clone git@github.com:asm-products/sheetsh-react-spreadsheet.git react-spreadsheet
+cd react-spreadsheet
+npm install
+cd ../sheetsh
+npm install ../react-spreadsheet/
+foreman start -f Procfile.dev
+```
 
 ### How Assembly Works
 
