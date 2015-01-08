@@ -3,7 +3,7 @@ renderApp = (req, res, next) ->
   app = App
     path: path
   markup = React.renderComponentToString app
-  res.send "<!doctype html>\n" + markup
+  res.send "<!doctype html>\n" + markup + "\n<script>__s3 = '#{process.env.S3_ENDPOINT}'</script>"
 
 "use strict"
 
@@ -35,7 +35,7 @@ api = express()
       author: req.body.author
 
     s3.putObject {
-      Bucket: 'sheetstore'
+      Bucket: process.env.S3_BUCKET_NAME
       Key: sheetId + '.json'
       ACL: 'public-read'
       Body: JSON.stringify sheetData
@@ -55,5 +55,5 @@ app.use(bodyParser.json(strict: false))
    .use("/api", api)
    .use(renderApp)
    .listen (process.env.PORT or 3000), ->
-  console.log "Point your browser at http://localhost:3000"
+  console.log "Point your browser at http://0.0.0.0:#{process.env.PORT or 3000}"
   return

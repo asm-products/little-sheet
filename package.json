@@ -28,7 +28,7 @@
     "cuid": "^1.2.4",
     "less": "^1.7.5",
     "uglify-js": "^2.4.15",
-    "react-spreadsheet": "git://github.com/asm-products/sheetsh-react-spreadsheet"
+    "react-spreadsheet": "^0.2.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

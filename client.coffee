@@ -43,7 +43,7 @@ SheetPage = React.createClass
   statics:
     getSheetData: (sheetId, versionId, cb) ->
       if sheetId
-        url = "http://sheetstore.s3-website-us-east-1.amazonaws.com/#{sheetId}.json"
+        url = "#{__s3}/#{sheetId}.json"
         if typeof versionId == 'string'
           url += "?versionId=#{versionId}"
         else
@@ -270,17 +270,6 @@ App = React.createClass
         (link rel: 'stylesheet', href: 'http://yui.yahooapis.com/pure/0.5.0/pure-min.css')
         (link rel: 'stylesheet', href: '/assets/style.css')
         (script src: '/assets/bundle.js')
-        (script
-          dangerouslySetInnerHTML:
-            __html: '''
-  (function(t,r,a,c,k){k=r.createElement('script');k.type='text/javascript';
-  k.async=true;k.src=a;k.id='ma';r.getElementsByTagName('head')[0].appendChild(k);
-  t.maq=[];t.mai=c;t.ma=function(){t.maq.push(arguments)};
-  })(window,document,'http://spooner.alhur.es:5984/microanalytics/_design/microanalytics/_rewrite/tracker.js','2s9jicn0vr5mxxu');
-
-  ma('pageView');
-            '''
-        )
       )
       (div className: 'title',
         (h1 {}, 'Sheets')
