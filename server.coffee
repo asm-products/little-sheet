@@ -3,7 +3,11 @@ renderApp = (req, res, next) ->
   app = App
     path: path
   markup = React.renderComponentToString app
-  res.send "<!doctype html>\n" + markup + "\n<script>__s3 = '#{process.env.S3_ENDPOINT}'</script>"
+  res.send "<!doctype html>\n" + markup +
+    """\n<script>
+      __s3 = '#{process.env.S3_ENDPOINT}'
+      __ga = '#{process.env.GOOGLE_ANALYTICS_CODE}'
+    </script>"""
 
 "use strict"
 
