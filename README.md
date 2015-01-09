@@ -4,38 +4,41 @@
 
 ## A small sheet you can share
 
-This is a product being built by the Assembly community. You can help push this idea forward by visiting [https://assembly.com/sheetsh](https://assembly.com/sheetsh).
+This is a product being built by the Assembly community. You can help push this idea forward by visiting [https://assembly.com/little-sheet](https://assembly.com/little-sheet).
 
 ## How to run locally
 
 ```
-git clone git@github.com:asm-products/sheetsh.git
-cd sheetsh
+git clone git@github.com:asm-products/little-sheet.git
+cd little-sheet
 npm install
 foreman start -f Procfile.dev
 ```
 
-**Environment Variables**
+*This will run it with the react-spreadsheet component loaded from npm. If you wanna use your own copy of react-spreadsheet, continue reading.*
 
-You will need a S3 endpoint from which to load your sheets. If you are not going to save, I think you can just type any url, but in any case just use the same as in production:
+
+### Environment Variables
+
+If you don't want to save the sheets, you don't need any environment variable, but if you do, you will need the following:
+
+`S3_KEY_ID`, `S3_SECRET`, `S3_BUCKET_NAME` and a corresponding `S3_ENDPOINT`.
+
+You can get a view-only access to the current database of sheets by having only
 
 `S3_ENDPOINT=http://sheetstore.s3-website-us-east-1.amazonaws.com`
 
-If you wanna save you will need the following:
-
-`S3_BUCKET_NAME`, `S3_KEY_ID`, `S3_SECRET` and a correct `S3_ENDPOINT`, of course.
-
 Just put them all in a `.env` file and run with [Foreman](https://toolbelt.heroku.com/).
 
-**To run with a custom build of [react-spreadsheet](https://github.com/asm-products/sheetsh-react-spreadsheet)**
+### To run with a custom build of [react-spreadsheet](https://github.com/asm-products/little-sheet-react-spreadsheet)
 
 In a separate folder (the parent folder of your github cloned projects, for example):
 
 ```
-git clone git@github.com:asm-products/sheetsh-react-spreadsheet.git react-spreadsheet
+git clone git@github.com:asm-products/little-sheet-react-spreadsheet.git react-spreadsheet
 cd react-spreadsheet
 npm install
-cd ../sheetsh
+cd ../little-sheet
 npm install ../react-spreadsheet/
 foreman start -f Procfile.dev
 ```

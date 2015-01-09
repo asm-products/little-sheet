@@ -92,7 +92,7 @@ SheetPage = React.createClass
           sheet: sheet
 
       # change page title
-      document.title = "#{@props.sheetId} @ Sheets"
+      document.title = "LittleSheet ##{@props.sheetId}"
 
     else if not @state.sheet
       location.pathname = @state.newSheetId
@@ -108,7 +108,7 @@ SheetPage = React.createClass
   componentDidUpdate: ->
     if @props.sheetId
       # change page title
-      document.title = "#{@props.sheetId} @ Sheets"
+      document.title = "LittleSheet ##{@props.sheetId}"
 
   render: ->
     if not @state.sheet
@@ -266,13 +266,13 @@ App = React.createClass
     (html {},
       (head {},
         (meta charSet: 'utf-8')
-        (title {}, 'Sheets: a small sheet you can share')
+        (title {}, 'LittleSheet: a small sheet you can share')
         (link rel: 'stylesheet', href: 'http://yui.yahooapis.com/pure/0.5.0/pure-min.css')
         (link rel: 'stylesheet', href: '/assets/style.css')
         (script src: '/assets/bundle.js')
       )
       (div className: 'title',
-        (h1 {}, 'Sheets')
+        (h1 {}, 'LittleSheet')
         (h2 {}, 'a small sheet you can share')
       )
       (Pages
