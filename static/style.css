@@ -233,10 +233,13 @@ body {
 #main .sub .new {
   padding: 3px 7px;
   background-color: rgba(143, 49, 31, 0.6);
+  font-family: Helvetica, monospace;
   color: white;
 }
 #main .sub .new input {
   width: 100px;
   background-color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+  font-family: Inconsolata, monospace;
   color: #666;
 }

@@ -95,17 +95,6 @@ Main = React.createFactory React.createClass
             top: ((@state.sheet.cells.length + 1) * 27) + 'px'
           onClick: @addRow
         )
-        (form className: 'pure-form sign',
-          (label {},
-            'Add your name? ' unless @state.sign
-            (input
-              type: 'checkbox'
-              valueLink: @linkState 'sign'
-              className: 'sign'
-            ) unless @state.sign
-          )
-          (input valueLink: @linkState 'author') if @state.sign
-        )
         (button
           className: 'pure-button save'
           onClick: @save
