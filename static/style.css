@@ -1,0 +1,242 @@
+@import url(http://fonts.googleapis.com/css?family=Inconsolata|Sacramento);
+.spreadsheet .clipboard-container {
+  position: fixed;
+  left: 0px;
+  bottom: 0px;
+  width: 0px;
+  height: 0px;
+  z-index: 100;
+  opacity: 0;
+}
+.spreadsheet .clipboard-container .clipboard {
+  width: 1px;
+  height: 1px;
+  padding: 0px;
+}
+.spreadsheet table {
+  border-collapse: collapse;
+}
+.spreadsheet,
+.spreadsheet * {
+  box-sizing: border-box;
+}
+.spreadsheet tr td {
+  border: 1px solid #EEE;
+  min-width: 50px;
+  max-width: 75px;
+  height: 26px;
+  overflow: hidden;
+}
+.spreadsheet tr td.label {
+  background-color: #EEE;
+  text-align: center;
+  padding: 1px;
+}
+.spreadsheet tr td.cell {
+  padding: 0;
+  position: relative;
+}
+.spreadsheet tr td.cell.multi-selected div {
+  background-color: rgba(194, 221, 178, 0.2);
+}
+.spreadsheet tr td.cell.selected div {
+  border: 2px solid #5F8EDB;
+}
+.spreadsheet tr td.cell div {
+  border: 2px solid transparent;
+  height: 26px;
+  width: 100%;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+}
+.spreadsheet tr td.cell div span,
+.spreadsheet tr td.cell div input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 1px;
+  margin: 0;
+  text-align: right;
+  overflow: hidden;
+  font-size: 1em;
+}
+.spreadsheet tr td.cell div span {
+  display: block;
+}
+.spreadsheet tr td.cell div input {
+  outline: none;
+}
+.spreadsheet tr td.cell .strap {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  right: 0px;
+  bottom: 0px;
+  background: white;
+  z-index: 200;
+  cursor: crosshair;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Helvetica, sans-serif;
+  background: #f7f6eb;
+  color: #444444;
+}
+.title {
+  text-align: center;
+}
+.title h1 {
+  font-family: 'Inconsolata';
+  color: #254d45;
+  font-size: 3em;
+  margin-bottom: 7px;
+}
+.title h2 {
+  font-family: Sacramento;
+  font-weight: normal;
+  font-size: 2.3em;
+  margin-top: 0px;
+}
+#main {
+  text-align: center;
+}
+#main .sheet-area {
+  display: inline-block;
+}
+#main .sheet-area .sheetId {
+  margin-bottom: 4px;
+}
+#main .sheet-area .sheetId a {
+  text-decoration: none;
+  font-family: Inconsolata;
+  color: rgba(143, 49, 31, 0.9);
+}
+#main .sheet-area .author,
+#main .sheet-area .date {
+  margin-bottom: 10px;
+  font-style: italic;
+  font-weight: normal;
+  color: #666;
+  font-size: 0.8em;
+}
+#main .sheet-area a.date:hover {
+  text-decoration: underline;
+}
+#main .sheet-area .share {
+  margin: 7px 0px 11px;
+}
+#main .sheet-area .share input {
+  width: 132px;
+}
+#main .sheet-area .remove-row,
+#main .sheet-area .remove-col,
+#main .sheet-area .add-row,
+#main .sheet-area .add-col {
+  cursor: pointer;
+}
+#main .sheet-area .remove-row,
+#main .sheet-area .remove-col {
+  background: rgba(143, 49, 31, 0.1);
+}
+#main .sheet-area .remove-row:hover,
+#main .sheet-area .remove-col:hover {
+  background: rgba(143, 49, 31, 0.9);
+}
+#main .sheet-area .add-row,
+#main .sheet-area .add-col {
+  background-color: rgba(194, 221, 178, 0.2);
+}
+#main .sheet-area .add-row:hover,
+#main .sheet-area .add-col:hover {
+  background: #c2ddb2;
+}
+#main .sheet-area .add-row,
+#main .sheet-area .remove-row {
+  height: 10px;
+  width: 100%;
+  width: -webkit-calc(100% - 20px);
+  width: -moz-calc(100% - 20px);
+  width: calc(100% - 20px);
+  position: relative;
+  left: 10px;
+}
+#main .sheet-area .remove-row {
+  border-radius: 91px 91px 0 0;
+}
+#main .sheet-area .add-row {
+  border-radius: 0 0 91px 91px;
+}
+#main .sheet-area .add-col,
+#main .sheet-area .remove-col {
+  float: left;
+  width: 10px;
+}
+#main .sheet-area .remove-col {
+  border-radius: 91px 0 0 91px;
+}
+#main .sheet-area .add-col {
+  border-radius: 0 91px 91px 0;
+}
+#main .sheet-area .spreadsheet {
+  float: left;
+  background: white;
+}
+#main .sheet-area .spreadsheet td {
+  border-color: #c2ddb2 !important;
+}
+#main .sheet-area .spreadsheet td.cell.selected div {
+  border-color: #c2ddb2 !important;
+}
+#main .sheet-area .spreadsheet td.cell {
+  min-width: 62px;
+  max-width: 98px;
+}
+#main .sheet-area .spreadsheet td.label {
+  background-color: #c2ddb2 !important;
+}
+#main .sheet-area .spreadsheet input {
+  font-family: monospace;
+}
+#main .sheet-area .sign {
+  margin-top: 16px;
+}
+#main .sheet-area .sign label {
+  margin-right: 5px;
+}
+#main .sheet-area .sign > input {
+  width: 164px;
+  border: none;
+  border-bottom: 1px solid #254d45;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: transparent;
+  padding-bottom: 0;
+  font-family: 'Sacramento';
+  font-size: 1.3em;
+  text-align: center;
+}
+#main .sheet-area button.save {
+  font-family: 'Inconsolata';
+  font-size: 1.1em;
+  margin: 20px auto;
+  background: #254d45;
+  color: white;
+}
+#main .sub {
+  margin-top: 40px;
+  margin-bottom: 0;
+}
+#main .sub .new {
+  padding: 3px 7px;
+  background-color: rgba(143, 49, 31, 0.6);
+  color: white;
+}
+#main .sub .new input {
+  width: 100px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #666;
+}

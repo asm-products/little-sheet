@@ -1,0 +1,21 @@
+{
+  "name": "sheets",
+  "version": "0.0.0",
+  "description": "React project",
+  "dependencies": {
+    "superagent": "~0.18.0",
+    "coffee-script": "^1.8.0",
+    "cuid": "^1.2.4",
+    "uglify-js": "^2.4.15",
+    "react-spreadsheet": "^0.3.0",
+    "coffeeify": "^1.0.0",
+    "browserify": "^8.1.0",
+    "react": "^0.12.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run build-light && uglifyjs ./static/bundle.js -o ./static/bundle.js",
+    "build-light": "browserify -t coffeeify ./app.coffee > ./static/bundle.js && lessc style.less ./static/style.css",
+    "start": "foreman run python main.py"
+  }
+}
