@@ -207,10 +207,9 @@ getSheetData = (sheetId, versionId, cb) ->
     cb {Error: 'noSheetId'}
 
 saveSheetData = (sheetId, sheetData, cb) ->
-  superagent.put("/api/sheets/#{sheetId}")
+  superagent.put("/sheets/#{sheetId}")
             .send(sheetData)
-            .end (err, res) ->
-    cb err, (if res then res.body else null)
+            .end(cb)
 
 main = document.getElementById 'main'
 React.render Main(sheetId: main.dataset.sheet), main

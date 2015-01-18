@@ -1,6 +1,7 @@
+import json
 import random
 import settings
-from flask import Flask, render_template, abort, redirect
+from flask import Flask, render_template, abort, redirect, request
 
 app = Flask(__name__)
 app.config.from_object(settings)
@@ -21,7 +22,7 @@ def save_sheet(sheet_id):
     }
 
     key = Key(bucket)
-    key.key = sheet_id
+    key.key = sheet_id + '.json'
     key.set_contents_from_string(
         json.dumps(sheet),
         policy='public-read',
